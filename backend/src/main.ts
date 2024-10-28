@@ -1,1 +1,51 @@
-console.log("hello")
+import express, { NextFunction, Request, Response } from "express"
+import cors from "cors"
+import cookieParser from "cookie-parser"
+import { APIError } from "./utils/error"
+import { env } from "./utils/config"
+import { createDBConnection } from "./utils/db"
+
+createDBConnection()
+  .then((db) => console.log("connected to db"))
+  .catch((err) => {
+    console.error("failed to connect to db", err);
+  });
+
+const app=express()
+
+app.use(
+    cors({
+    origin:"*",
+    credentials:true
+}))
+
+app.use(express.json())
+app.use(cookieParser())
+app.get("/",(re:Request,res:Response,next:NextFunction)=>{
+    res.json({
+        message:"Welcome to Book Review App",
+        data:null,
+        isSuccess:true,
+    })
+})
+
+
+app.use((error:APIError, req: Request, res: Response, next: NextFunction) => {
+  console.error(error);
+  if (error instanceof APIError) {
+    res.status(error.status).json({
+      message: error.message,
+      data: null,
+      isSuccess: false,
+    });
+    return;
+  }
+  res.status(500).json({
+    message: "Internal server error",
+    data: null,
+    isSuccess: false,
+  });
+});
+app.listen(env.PORT, () =>
+    console.log(`Server started on: http://localhost:${env.PORT}`)
+  );
