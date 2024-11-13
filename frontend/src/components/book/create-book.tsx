@@ -16,7 +16,7 @@ const createBookSchema = z.object({
   title: z.string().min(1),
   author: z.string().min(1),
   genre: z.string().min(1),
-  description: z.string().optional(),
+  description: z.string()
 });
 
 export function CreateBook() {
@@ -65,10 +65,28 @@ export function CreateBookModal({
     },
     resolver: zodResolver(createBookSchema),
   });
-
+const addBookMutation=useAddBookMutation()
   const onSubmit: SubmitHandler<z.infer<typeof createBookSchema>> = (data) => {
     try {
-      useAddBookMutation.
+      addBookMutation.mutateAsync(
+        {
+          title: data.title,
+          author: data.author,
+          genre: data.genre,
+          description:data.description
+        },
+        {
+          onSuccess(data) {
+            successToast(data.message);
+            reset();
+            
+          },
+          onError(error) {
+            console.error("error", error);
+            errorToast(error.message);
+          },
+        }
+      );
     } catch (error) {
       console.error("error", error);
       errorToast("Something went wrong");
