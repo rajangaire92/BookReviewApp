@@ -1,28 +1,18 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
+import { Link, useNavigate } from "react-router-dom";
 import { useLoginUserMutation } from "../../api/auth/query";
-import { successToast, errorToast } from "../toaster";
-import { FaSignInAlt } from "react-icons/fa";
-import { useState, useEffect } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { errorToast, successToast } from "../toaster";
 
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6).max(25),
 });
 
-const quotes = [
-  "“A room without books is like a body without a soul.” – Cicero",
-  "“Books are a uniquely portable magic.” – Stephen King",
-  "“So many books, so little time.” – Frank Zappa",
-  "“A book is a dream that you hold in your hand.” – Neil Gaiman",
-];
-
-export function LoginForm() {
+export const LoginForm = () => {
   const navigate = useNavigate();
   const loginUserMutation = useLoginUserMutation();
-  const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
 
   const {
     register,
@@ -59,102 +49,71 @@ export function LoginForm() {
       );
     } catch (error) {
       console.error("error", error);
-      errorToast("Something went wrong.");
+      errorToast("something went wrong");
     }
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentQuoteIndex((prevIndex) => (prevIndex + 1) % quotes.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-700 via-pink-500 to-red-500 relative overflow-hidden">
-      {/* Background Book Images and Quotes */}
-      <div className="absolute inset-0 grid grid-cols-2 gap-4 opacity-80 pointer-events-none">
-        <div className="flex items-center justify-center text-center text-white text-lg italic p-6 bg-black bg-opacity-50">
-          <p>{quotes[currentQuoteIndex]}</p>
-        </div>
-        <div className="flex items-center justify-center text-center text-white text-lg italic p-6 bg-black bg-opacity-50">
-          <p>{quotes[(currentQuoteIndex + 1) % quotes.length]}</p>
-        </div>
-      </div>
-
-      {/* Decorative Book Image Background */}
-      <div className="absolute inset-0 z-0 bg-cover bg-center bg-fixed opacity-30 " style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1512820790803-83ca734da794?ixlib=rb-1.2.1&auto=format&fit=crop&w=2850&q=80')`,
-        }}
-      />
-
-      {/* Main Form Container */}
-      <div className="relative z-10 bg-white bg-opacity-90 rounded-2xl shadow-2xl p-12 max-w-lg w-full transform hover:scale-105 transition-transform duration-300">
-        <h2 className="text-4xl font-bold text-gray-900 text-center mb-8">
-          Welcome Back
+    <div className="bg-gradient-to-br from-[#F3EEEA] to-[#EBE3D5] min-h-screen flex items-center justify-center">
+      <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 shadow-xl rounded-lg p-8 w-[400px] border border-gray-300">
+        <h2 className="text-white text-3xl font-extrabold text-center mb-6">
+          Login
         </h2>
-        <p className="text-md text-gray-700 text-center mb-8">
-          Login to continue to your account
-        </p>
-
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-lg font-medium text-gray-900">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-white mb-2"
+            >
               Email
             </label>
             <input
               id="email"
               type="email"
               placeholder="Enter your email"
-              className="block w-full mt-2 p-4 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring focus:ring-purple-500 focus:ring-opacity-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
               {...register("email")}
             />
             {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+              <p className="text-red-300 text-sm mt-2">{errors.email.message}</p>
             )}
           </div>
-
           <div>
-            <label htmlFor="password" className="block text-lg font-medium text-gray-900">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-white mb-2"
+            >
               Password
             </label>
             <input
               id="password"
               type="password"
               placeholder="Enter your password"
-              className="block w-full mt-2 p-4 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring focus:ring-purple-500 focus:ring-opacity-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
               {...register("password")}
             />
             {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+              <p className="text-red-300 text-sm mt-2">
+                {errors.password.message}
+              </p>
             )}
           </div>
-
-          <div className="flex items-center justify-between mt-4">
-            <p className="text-sm text-gray-600">
-              Don’t have an account?{" "}
-              <Link className="text-purple-600 underline" to="/register">
-                Register
-              </Link>
-            </p>
+          <div>
+            <button
+              type="submit"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+            >
+              {loginUserMutation.isPending ? "Logging in..." : "Login"}
+            </button>
           </div>
-
-          <button
-            type="submit"
-            className="mt-6 w-full flex items-center justify-center bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold py-4 rounded-xl shadow-md hover:from-purple-600 hover:to-indigo-700 transition-colors duration-300"
-            disabled={loginUserMutation.isPending}
-          >
-            {loginUserMutation.isPending ? (
-              "Logging in..."
-            ) : (
-              <>
-                <FaSignInAlt />
-                Login
-              </>
-            )}
-          </button>
         </form>
+        <p className="mt-4 text-center text-white">
+          Don't have an account?{" "}
+          <Link to="/register" className="text-yellow-300 underline">
+            Sign Up
+          </Link>
+        </p>
       </div>
     </div>
   );
-}
+};

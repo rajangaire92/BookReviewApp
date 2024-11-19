@@ -1,10 +1,10 @@
 
 import { useGetAllBookQuery } from "../../api/book/query";
 import { ReviewSubmit } from "../review/create-review";
-import { DeleteBook } from "./delete-book";
-import { UpdateBook } from "./update-book";
 
-export const ListBook = () => {
+
+
+export const ListBookHome = () => {
   const { isLoading, data, isError, error } = useGetAllBookQuery();
 
   if (isLoading) {
@@ -17,7 +17,7 @@ export const ListBook = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F3EEEA] to-[#EBE3D5] p-10">
       <div className="text-center text-4xl font-bold mb-8 text-gray-800">
-         Admin,Please make changes.
+         Look through Books...
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
         {data?.data.map((book) => (
@@ -47,10 +47,8 @@ export const ListBook = () => {
 
             {/* Actions */}
             <div className="flex justify-between items-center bg-gray-100 p-4">
-              <UpdateBook book={book} />
-              <DeleteBook bookId={book._id} />
+          
               <ReviewSubmit book={book} />
-              <use/>
             </div>
           </div>
         ))}

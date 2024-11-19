@@ -1,15 +1,14 @@
-import Navbar from "../components/app-shell";
+// import { Toaster } from "react-hot-toast";
+import { AppShell } from "../components/app-shell";
 import { LoginForm } from "../components/auth/login-form";
 
-export function LoginPage() {
+export const LoginPage = () => {
   return (
-
-     <div>
-      <Navbar/>
-       <div >
-        <LoginForm />
-      </div>
-     </div>
-
+    <div className="">
+    <AppShell>
+    <LoginForm />
+    </AppShell>
+      {/* <Toaster /> */}
+    </div>
   );
-}
+};

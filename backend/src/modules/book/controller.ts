@@ -55,7 +55,7 @@ export async function updateBookController(
 ) {
   try {
     const body = req.body;
-
+console.log(body)
     const bookId = req.params.bookId;
 
     const { success, error, data } = UpdateBookControllerSchema.safeParse(body);

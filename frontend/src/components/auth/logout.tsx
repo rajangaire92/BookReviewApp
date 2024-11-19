@@ -1,38 +1,35 @@
+import { useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "../../api/auth/query";
 import { errorToast, successToast } from "../toaster";
 
-export function Logout() {
-  const logoutMutation = useLogoutMutation();
+export const Logout = () => {
+  const logoutUserMutatuon = useLogoutMutation();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     try {
-      logoutMutation.mutateAsync(
+      logoutUserMutatuon.mutateAsync(
         {},
         {
-          onSuccess: () => {
-            window.location.href = "/login";
-            successToast("Logout successful");
+          onSuccess(data) {
+            successToast(data.message);
+            // window.location.href = '/login'
+            navigate("/login");
           },
-          onError: (error) => {
-            console.error(error);
+          onError(error) {
+            console.error("error", error);
             errorToast(error.message);
           },
         }
       );
     } catch (error) {
-      console.error(error);
+      console.error("error", error);
       errorToast("something went wrong");
     }
   };
-
   return (
-    <button
-      type="button"
-      onClick={handleLogout}
-      disabled={logoutMutation.isPending}
-      className="ml-auto rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-    >
-      Logout
-    </button>
+    <div className="flex items-center justify-center">
+      <button onClick={handleLogout}>Logout</button>
+    </div>
   );
-}
+};

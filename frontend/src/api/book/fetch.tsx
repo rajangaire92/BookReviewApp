@@ -6,46 +6,45 @@ export type TBook = {
   author: string;
   genre: string;
   description: string;
-  created_at: string;
+
 };
 
-/**
- * for add book api
- */
-export type TAddBookInput = {
+export type TaddBookInput = {
   title: string;
   author: string;
   genre: string;
   description: string;
+
 };
 
-export type TAddBookOutput = {
-  message: string;
+export type TaddBookOutput = {
   isSuccess: boolean;
+  message: string;
   data: TBook;
 };
 
-export async function addBook(input: TAddBookInput): Promise<TAddBookOutput> {
+export async function addBook(input: TaddBookInput): Promise<TaddBookOutput> {
   const res = await fetch(`${env.BACKEND_URL}/api/books/addBook`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(input),
+    body: JSON.stringify({
+      title: input.title,
+      author: input.author,
+      genre: input.genre,
+      description: input.description,
+   
+    }),
   });
 
   const data = await res.json();
   if (!res.ok) {
     throw new Error(data.message);
   }
-
   return data;
 }
-
-/**
- * for update book api
- */
 
 export type TUpdateBookInput = {
   bookId: string;
@@ -65,7 +64,7 @@ export async function updateBook(
   input: TUpdateBookInput
 ): Promise<TUpdateBookOutput> {
   const res = await fetch(`${env.BACKEND_URL}/api/books/${input.bookId}`, {
-    method: "PUT",
+    method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
@@ -74,6 +73,7 @@ export async function updateBook(
   });
 
   const data = await res.json();
+
   if (!res.ok) {
     throw new Error(data.message);
   }
@@ -81,9 +81,28 @@ export async function updateBook(
   return data;
 }
 
-/**
- * for delete book api
- */
+export type TGetAllBooksOutput = {
+  message: string;
+  isSuccess: boolean;
+  data: TBook[];
+};
+
+export async function getAllBook(): Promise<TGetAllBooksOutput> {
+  const res = await fetch(`${env.BACKEND_URL}/api/books/`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message);
+  }
+  return data;
+}
 
 export type TDeleteBookInput = {
   bookId: string;
@@ -99,66 +118,6 @@ export async function deleteBook(
 ): Promise<TDeleteBookOutput> {
   const res = await fetch(`${env.BACKEND_URL}/api/books/${input.bookId}`, {
     method: "DELETE",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.message);
-  }
-
-  return data;
-}
-
-/**
- * for get all books api
- */
-
-export type TGetAllBooksOutput = {
-  message: string;
-  isSuccess: boolean;
-  data: TBook[];
-};
-
-export async function getAllBooks(): Promise<TGetAllBooksOutput> {
-  const res = await fetch(`${env.BACKEND_URL}/api/books`, {
-    method: "GET",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.message);
-  }
-
-  return data;
-}
-
-/**
- * for get book by id api
- */
-
-export type TGetBookByIdInput = {
-  bookId: string;
-};
-
-export type TGetBookByIdOutput = {
-  message: string;
-  isSuccess: boolean;
-  data: TBook;
-};
-
-export async function getBookById(
-  input: TGetBookByIdInput
-): Promise<TGetBookByIdOutput> {
-  const res = await fetch(`${env.BACKEND_URL}/api/books/${input.bookId}`, {
-    method: "GET",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",

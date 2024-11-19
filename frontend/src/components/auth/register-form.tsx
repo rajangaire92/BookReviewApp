@@ -1,10 +1,9 @@
+import { Link, useNavigate } from "react-router-dom";
+import { useRegisterUserMutation } from "../../api/auth/query";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import { z } from "zod";
-import { useRegisterUserMutation } from "../../api/auth/query";
 import { errorToast, successToast } from "../toaster";
-import { useEffect, useState } from "react";
 
 const registerSchema = z
   .object({
@@ -18,17 +17,9 @@ const registerSchema = z
     path: ["confirmPassword"],
   });
 
-const quotes = [
-  "“A reader lives a thousand lives before he dies.” – George R.R. Martin",
-  "“Reading gives us someplace to go when we have to stay where we are.” – Mason Cooley",
-  "“Today a reader, tomorrow a leader.” – Margaret Fuller",
-  "“Once you learn to read, you will be forever free.” – Frederick Douglass",
-];
-
-export function RegisterForm() {
+export const RegisterForm = () => {
   const navigate = useNavigate();
   const registerUserMutation = useRegisterUserMutation();
-  const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
 
   const {
     register,
@@ -68,129 +59,109 @@ export function RegisterForm() {
       );
     } catch (error) {
       console.error("error", error);
-      errorToast("Something went wrong");
+      errorToast("something went wrong");
     }
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentQuoteIndex((prevIndex) => (prevIndex + 1) % quotes.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-700 via-pink-500 to-red-500 relative overflow-hidden">
-      {/* Background Quotes */}
-      <div className="absolute inset-0 grid grid-cols-2 gap-4 opacity-80 pointer-events-none">
-        <div className="flex items-center justify-center text-center text-white text-lg italic p-6 bg-black bg-opacity-50">
-          <p>{quotes[currentQuoteIndex]}</p>
-        </div>
-        <div className="flex items-center justify-center text-center text-white text-lg italic p-6 bg-black bg-opacity-50">
-          <p>{quotes[(currentQuoteIndex + 1) % quotes.length]}</p>
-        </div>
-      </div>
-
-      {/* Background Image */}
-      <div
-        className="absolute inset-0 z-0 bg-cover bg-center bg-fixed opacity-30"
-        style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1528744598421-b7d6d8f3913c?ixlib=rb-1.2.1&auto=format&fit=crop&w=2850&q=80')`,
-        }}
-      />
-
-      {/* Main Form Container */}
-      <div className="relative z-10 bg-white bg-opacity-90 rounded-2xl shadow-2xl p-12 max-w-lg w-full transform hover:scale-105 transition-transform duration-300">
-        <h2 className="text-4xl font-bold text-gray-900 text-center mb-8">
-          Create Your Account
+    <div className="bg-gradient-to-br from-[#F3EEEA] to-[#EBE3D5] min-h-screen flex items-center justify-center">
+      <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 shadow-xl rounded-lg p-8 w-[400px] border border-gray-300">
+        <h2 className="text-white text-3xl font-extrabold text-center mb-6">
+          Sign Up
         </h2>
-        <p className="text-md text-gray-700 text-center mb-8">
-          Register for a free account and join our community.
-        </p>
-
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
-            <label htmlFor="username" className="block text-lg font-medium text-gray-900">
-              Username
-            </label>
-            <input
-              id="username"
-              type="text"
-              placeholder="Enter your username"
-              className="block w-full mt-2 p-4 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring focus:ring-purple-500 focus:ring-opacity-50"
-              {...register("username")}
-            />
-            {errors.username && (
-              <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="email" className="block text-lg font-medium text-gray-900">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-white mb-2"
+            >
               Email
             </label>
             <input
-              id="email"
               type="email"
+              id="email"
               placeholder="Enter your email"
-              className="block w-full mt-2 p-4 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring focus:ring-purple-500 focus:ring-opacity-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
               {...register("email")}
             />
             {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+              <p className="text-red-300 text-sm mt-2">{errors.email.message}</p>
             )}
           </div>
-
           <div>
-            <label htmlFor="password" className="block text-lg font-medium text-gray-900">
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-white mb-2"
+            >
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              placeholder="Enter your username"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+              {...register("username")}
+            />
+            {errors.username && (
+              <p className="text-red-300 text-sm mt-2">
+                {errors.username.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-white mb-2"
+            >
               Password
             </label>
             <input
-              id="password"
               type="password"
+              id="password"
               placeholder="Enter your password"
-              className="block w-full mt-2 p-4 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring focus:ring-purple-500 focus:ring-opacity-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
               {...register("password")}
             />
             {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+              <p className="text-red-300 text-sm mt-2">
+                {errors.password.message}
+              </p>
             )}
           </div>
-
           <div>
-            <label htmlFor="confirm-password" className="block text-lg font-medium text-gray-900">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-white mb-2"
+            >
               Confirm Password
             </label>
             <input
-              id="confirm-password"
               type="password"
+              id="confirmPassword"
               placeholder="Confirm your password"
-              className="block w-full mt-2 p-4 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring focus:ring-purple-500 focus:ring-opacity-50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
               {...register("confirmPassword")}
             />
             {errors.confirmPassword && (
-              <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
+              <p className="text-red-300 text-sm mt-2">
+                {errors.confirmPassword.message}
+              </p>
             )}
           </div>
-
-          <div className="flex items-center justify-between mt-4">
-            <p className="text-sm text-gray-600">
-              Already have an account?{" "}
-              <Link className="text-purple-600 underline" to="/login">
-                Login
-              </Link>
-            </p>
-          </div>
-
           <button
             type="submit"
-            className="mt-6 w-full flex items-center justify-center bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold py-4 rounded-xl shadow-md hover:from-purple-600 hover:to-indigo-700 transition-colors duration-300"
-            disabled={registerUserMutation.isPending}
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
           >
-            {registerUserMutation.isPending ? "Registering..." : "Register"}
+            {registerUserMutation.isPending ? "Signing Up..." : "Sign Up"}
           </button>
         </form>
+        <p className="mt-4 text-center text-white">
+          Already have an account?{" "}
+          <Link to="/login" className="text-yellow-300 underline">
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );
-}
+};

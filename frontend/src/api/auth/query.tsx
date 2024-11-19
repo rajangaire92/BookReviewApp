@@ -27,7 +27,7 @@ export function useLoginUserMutation() {
 }
 
 // for me api
-export function useMeQuery() {
+export function useMeUserQuery() {
   return useQuery<TMeOutput, Error>({
     queryKey: ["me"],
     queryFn: me,

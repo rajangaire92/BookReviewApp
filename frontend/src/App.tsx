@@ -1,6 +1,6 @@
 import "./App.css";
-import { QueryClientProvider } from "./query"
 import { RouterProvider } from "./router";
+import { QueryClientProvider } from "./query";
 
 function App() {
   return (

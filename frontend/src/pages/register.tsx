@@ -1,13 +1,13 @@
-import Navbar from "../components/app-shell";
+import { AppShell } from "../components/app-shell";
 import { RegisterForm } from "../components/auth/register-form";
 
-export function RegisterPage() {
+export const RegisterPage = () => {
   return (
-  <div>
-    <Navbar/>
     <div className="">
-        <RegisterForm />
-      </div>
-  </div>
+      <AppShell>
+      <RegisterForm />
+      </AppShell>
+      {/* <Toaster /> */}
+    </div>
   );
-}
+};
